@@ -1,8 +1,8 @@
 import { IPoint } from "../interfaces/IPoint";
 
 export class Point implements IPoint {
-  #x: number;
-  #y: number;
+  readonly #x: number;
+  readonly #y: number;
 
   constructor(x: number, y: number) {
     this.#x = x;
@@ -29,13 +29,5 @@ export class Point implements IPoint {
 
   get y(): number {
     return this.#y;
-  }
-
-  set x(x: number) {
-    this.#x = x;
-  }
-
-  set y(y: number) {
-    this.#y = y;
   }
 }
