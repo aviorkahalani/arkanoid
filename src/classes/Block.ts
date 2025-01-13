@@ -1,10 +1,13 @@
 import { ICollidable } from "../interfaces/ICollidable";
+import { ISprite } from "../interfaces/ISprite";
+import { Arkanoid } from "./Arkanoid";
 import { Color } from "./Color";
+import { Gui } from "./Gui";
 import { Point } from "./Point";
 import { Rectangle } from "./Rectangle";
 import { Velocity } from "./Velocity";
 
-export class Block extends Rectangle implements ICollidable {
+export class Block extends Rectangle implements ICollidable, ISprite {
   #color: Color;
 
   constructor(
@@ -52,5 +55,23 @@ export class Block extends Rectangle implements ICollidable {
     }
 
     return velocity;
+  }
+
+  drawOnGui(gui: Gui): void {
+    gui.color = this.#color;
+    gui.drawRectangle(
+      this.upperLeft.x,
+      this.upperLeft.y,
+      this.width,
+      this.height
+    );
+  }
+
+  // currently nothing
+  timePassed(): void {}
+
+  addToGame(game: Arkanoid): void {
+    game.addCollidable(this);
+    game.addSprite(this);
   }
 }

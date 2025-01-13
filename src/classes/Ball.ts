@@ -1,3 +1,5 @@
+import { ISprite } from "../interfaces/ISprite";
+import { Arkanoid } from "./Arkanoid";
 import { Color } from "./Color";
 import { GameEnvironment } from "./GameEnvironment";
 import { Gui } from "./Gui";
@@ -5,7 +7,7 @@ import { Line } from "./Line";
 import { Point } from "./Point";
 import { Velocity } from "./Velocity";
 
-export class Ball {
+export class Ball implements ISprite {
   #center: Point;
   #radius: number;
   #color: Color;
@@ -50,8 +52,12 @@ export class Ball {
     gui.drawCircle(this.#center.x, this.#center.y, this.#radius);
   }
 
+  timePassed(): void {
+    this.move();
+  }
+
   move(): void {
-    const epsilon = 1e-8;
+    const epsilon = 0.1;
     const start: Point = this.#center;
     const end: Point = this.#velocity.applyVelocityToPoint(this.#center);
 
@@ -72,5 +78,9 @@ export class Ball {
 
       this.#velocity = collisionObject.hit(collisionPoint, this.#velocity);
     }
+  }
+
+  addToGame(game: Arkanoid): void {
+    game.addSprite(this);
   }
 }

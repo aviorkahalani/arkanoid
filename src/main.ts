@@ -2,4 +2,9 @@ import "./styles/global.css";
 import { Arkanoid } from "./classes/Arkanoid";
 
 // run the game
-Arkanoid.main();
+function main() {
+  const arkanoid = new Arkanoid();
+  arkanoid.main();
+}
+
+main();
