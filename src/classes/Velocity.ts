@@ -25,6 +25,13 @@ export class Velocity {
     this.#dy = dy;
   }
 
+  fromAngleAndSpeed(angle: number, speed: number) {
+    const radians = angle * (Math.PI / 180.0);
+    const dx = speed * Math.sin(radians);
+    const dy = -speed * Math.cos(radians);
+    return new Velocity(dx, dy);
+  }
+
   applyVelocityToPoint(p: Point): Point {
     return new Point(p.x + this.#dx, p.y + this.#dy);
   }

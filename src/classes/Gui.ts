@@ -79,4 +79,8 @@ export class Gui {
     this.#ctx.fill();
     this.#ctx.stroke();
   }
+
+  clear() {
+    this.#ctx.clearRect(0, 0, innerWidth, innerHeight);
+  }
 }
