@@ -17,8 +17,15 @@ export class Gui {
     this.#ctx = this.#canvas.getContext("2d") as CanvasRenderingContext2D;
     this.#color = Color.BLACK;
 
-    this.#canvas.width = this.#width;
-    this.#canvas.height = this.#height;
+    const dpr = window.devicePixelRatio || 1;
+    this.#canvas.width = this.#width * dpr;
+    this.#canvas.height = this.#height * dpr;
+
+    this.#ctx.scale(dpr, dpr);
+
+    // Set the CSS size
+    this.#canvas.style.width = `${this.#width}px`;
+    this.#canvas.style.height = `${this.#height}px`;
   }
 
   get title() {
