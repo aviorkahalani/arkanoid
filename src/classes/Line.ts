@@ -1,5 +1,6 @@
 import { ILine } from "../interfaces/ILine";
 import { Point } from "./Point";
+import { Rectangle } from "./Rectangle";
 
 export class Line implements ILine {
   #start: Point;
@@ -119,6 +120,24 @@ export class Line implements ILine {
 
     // Return the intersection point lies on both line segments
     return new Point(x, y);
+  }
+
+  closestIntersectionToStartOfLine(rect: Rectangle): Point | null {
+    const intersectionPoints = rect.findIntersectionPoints(this);
+
+    let minDistance = Infinity;
+    let closestPoint = null;
+
+    for (const p of intersectionPoints) {
+      const distance = this.#start.distance(p);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestPoint = new Point(p.x, p.y);
+      }
+    }
+
+    return closestPoint;
   }
 
   equals(other: Line): boolean {

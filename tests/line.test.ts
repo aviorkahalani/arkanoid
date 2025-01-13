@@ -1,6 +1,7 @@
 import { test, expect, describe, it } from "vitest";
 import { Line } from "../src/classes/Line";
 import { Point } from "../src/classes/Point";
+import { Rectangle } from "../src/classes/Rectangle";
 
 test("Get length should return √8", () => {
   const line = new Line(1, 1, 3, 3);
@@ -110,5 +111,65 @@ describe("test intersectionWith method", () => {
 
     expect(l1.intersectionWith(l2)).toBe(null);
     expect(l2.intersectionWith(l1)).toBe(null);
+  });
+});
+
+const rectangle = new Rectangle(new Point(2, 2), 3, 2);
+
+describe("test closestIntersectionToStartOfLine method", () => {
+  it("Should return Point (3, 4)", () => {
+    const line = new Line(3, 6, 3, 1);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(3, 4));
+  });
+
+  it("Should return Point (2, 3)", () => {
+    const line = new Line(1, 3, 6, 3);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(2, 3));
+  });
+
+  it("Should return Point (4, 4)", () => {
+    const line = new Line(5, 5, 1, 1);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(4, 4));
+  });
+
+  it("Should return Point (2, 4)", () => {
+    const line = new Line(1, 5, 5, 1);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(2, 4));
+  });
+
+  it("Should return Point (5, 2)", () => {
+    const line = new Line(6, 1, 4, 3);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(5, 2));
+  });
+
+  it("Should return null", () => {
+    const line = new Line(7, 1, 7, 4);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toBe(null);
+  });
+
+  it("Should return Point (2, 2)", () => {
+    const line = new Line(0, 0, 4, 4);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(2, 2));
+  });
+
+  it("Should return Point (5,4)", () => {
+    const line = new Line(6, 5, 2, 1);
+    const outputPoint = line.closestIntersectionToStartOfLine(rectangle);
+
+    expect(outputPoint).toStrictEqual(new Point(5, 4));
   });
 });
