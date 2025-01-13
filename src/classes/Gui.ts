@@ -1,4 +1,5 @@
 import { Color } from "./Color";
+import { KeyboardSensor } from "./KeyboardSensor";
 import { Point } from "./Point";
 
 export class Gui {
@@ -8,6 +9,7 @@ export class Gui {
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;
   #color: Color;
+  #keyboardSensor: KeyboardSensor;
 
   constructor(title: string, width: number, height: number) {
     this.#title = title;
@@ -16,6 +18,7 @@ export class Gui {
     this.#canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.#ctx = this.#canvas.getContext("2d") as CanvasRenderingContext2D;
     this.#color = Color.BLACK;
+    this.#keyboardSensor = new KeyboardSensor();
 
     const dpr = window.devicePixelRatio || 1;
     this.#canvas.width = this.#width * dpr;
@@ -50,6 +53,13 @@ export class Gui {
 
   get color() {
     return this.#color;
+  }
+
+  get keyboardSensor(): KeyboardSensor {
+    return new KeyboardSensor(
+      this.#keyboardSensor.key,
+      this.#keyboardSensor.isPressed
+    );
   }
 
   set color(color: Color) {
