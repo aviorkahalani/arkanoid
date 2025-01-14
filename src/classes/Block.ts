@@ -1,14 +1,22 @@
 import { ICollidable } from "../interfaces/ICollidable";
+import { IHitListener } from "../interfaces/IHitListener";
+import { IHitNotifier } from "../interfaces/IHitNotifier";
 import { ISprite } from "../interfaces/ISprite";
 import { Arkanoid } from "./Arkanoid";
+import { Ball } from "./Ball";
 import { Color } from "./Color";
 import { Gui } from "./Gui";
 import { Point } from "./Point";
 import { Rectangle } from "./Rectangle";
 import { Velocity } from "./Velocity";
+import _ from "lodash";
 
-export class Block extends Rectangle implements ICollidable, ISprite {
+export class Block
+  extends Rectangle
+  implements ICollidable, ISprite, IHitNotifier
+{
   #color: Color;
+  #hitListeners: IHitListener[];
 
   constructor(
     upperLeft: Point,
@@ -18,6 +26,7 @@ export class Block extends Rectangle implements ICollidable, ISprite {
   ) {
     super(upperLeft, width, height);
     this.#color = color;
+    this.#hitListeners = [];
   }
 
   get color() {
@@ -28,7 +37,11 @@ export class Block extends Rectangle implements ICollidable, ISprite {
     return new Rectangle(this.upperLeft, this.width, this.height);
   }
 
-  hit(collisionPoint: Point, currentVelocity: Velocity): Velocity {
+  hit(
+    hitter: Ball,
+    collisionPoint: Point,
+    currentVelocity: Velocity
+  ): Velocity {
     const epsilon = 1e-6;
 
     const leftSide = this.upperLeft.x;
@@ -54,6 +67,10 @@ export class Block extends Rectangle implements ICollidable, ISprite {
       velocity.dy = -velocity.dy;
     }
 
+    if (!this.isBallColorMatch(hitter)) {
+      this.notifyHit(hitter);
+    }
+
     return velocity;
   }
 
@@ -65,6 +82,7 @@ export class Block extends Rectangle implements ICollidable, ISprite {
       this.width,
       this.height
     );
+    gui.drawFrame(this.upperLeft.x, this.upperLeft.y, this.width, this.height);
   }
 
   // currently nothing
@@ -73,5 +91,31 @@ export class Block extends Rectangle implements ICollidable, ISprite {
   addToGame(game: Arkanoid): void {
     game.addCollidable(this);
     game.addSprite(this);
+  }
+
+  removeFromGame(game: Arkanoid): void {
+    game.removeCollidable(this);
+    game.removeSprite(this);
+  }
+
+  isBallColorMatch(ball: Ball) {
+    return this.#color.hexCode === ball.color.hexCode;
+  }
+
+  addHitListener(hl: IHitListener): void {
+    this.#hitListeners.push(hl);
+  }
+
+  removeHitListener(hl: IHitListener): void {
+    this.#hitListeners.filter((hitListener) => hitListener != hl);
+  }
+
+  notifyHit(hitter: Ball): void {
+    // Make a copy of the hitListeners before iterating over them.
+    const listeners = _.clone(this.#hitListeners);
+
+    for (const listener of listeners) {
+      listener.hitEvent(this, hitter);
+    }
   }
 }

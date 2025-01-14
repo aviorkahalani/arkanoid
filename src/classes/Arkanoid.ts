@@ -1,8 +1,11 @@
 import { ICollidable } from "../interfaces/ICollidable";
 import { ISprite } from "../interfaces/ISprite";
 import { Ball } from "./Ball";
+import { BallRemover } from "./BallRemover";
 import { Block } from "./Block";
+import { BlockRemover } from "./BlockRemover";
 import { Color } from "./Color";
+import { Counter } from "./Counter";
 import { GameEnvironment } from "./GameEnvironment";
 import { Gui } from "./Gui";
 import { Paddle } from "./Paddle";
@@ -14,11 +17,19 @@ export class Arkanoid {
   #gui: Gui;
   #sprites: SpriteCollection;
   #enviroment: GameEnvironment;
+  #remainingBlocks: Counter;
+  #blockRemover: BlockRemover;
+  #remainingBalls: Counter;
+  #ballRemover: BallRemover;
 
   constructor() {
     this.#gui = new Gui("Arkanoid", innerWidth, innerHeight);
     this.#sprites = new SpriteCollection();
     this.#enviroment = new GameEnvironment();
+    this.#remainingBlocks = new Counter();
+    this.#blockRemover = new BlockRemover(this, this.#remainingBlocks);
+    this.#remainingBalls = new Counter();
+    this.#ballRemover = new BallRemover(this, this.#remainingBalls);
   }
 
   main(): void {
@@ -26,12 +37,31 @@ export class Arkanoid {
     this.initializeBlocks();
     this.initializePaddle();
     this.initializeBall();
+    this.initializeDeathRegion();
 
     const animate = () => {
       this.#gui.clear();
       this.#sprites.drawAllOnGui(this.#gui);
       this.#sprites.notifyAllTimePassed();
-      requestAnimationFrame(animate);
+
+      const id = requestAnimationFrame(animate);
+
+      if (this.#remainingBlocks.value <= 0) {
+        cancelAnimationFrame(id);
+        setTimeout(() => {
+          this.#gui.clear();
+          console.log("WON");
+        }, 1000);
+      }
+
+      if (this.#remainingBalls.value <= 0) {
+        cancelAnimationFrame(id);
+        console.log("LOST");
+
+        setTimeout(() => {
+          this.#gui.clear();
+        }, 1000);
+      }
     };
 
     animate();
@@ -46,13 +76,8 @@ export class Arkanoid {
       innerHeight
     );
     const topWall = new Block(new Point(0, 0), innerWidth, margin);
-    const bottomWall = new Block(
-      new Point(0, innerHeight - margin),
-      innerWidth,
-      margin
-    );
 
-    const walls: Block[] = [leftWall, rightWall, topWall, bottomWall];
+    const walls: Block[] = [leftWall, rightWall, topWall];
     for (const wall of walls) {
       wall.addToGame(this);
     }
@@ -89,6 +114,8 @@ export class Arkanoid {
           color
         );
         block.addToGame(this);
+        block.addHitListener(this.#blockRemover);
+        this.#remainingBlocks.increase(1);
       }
     }
   }
@@ -107,16 +134,36 @@ export class Arkanoid {
   }
 
   initializeBall(): void {
-    const ball = new Ball(new Point(50, 50), 5, Color.BLUE, this.#enviroment);
+    const ball = new Ball(new Point(50, 50), 6, Color.BLUE, this.#enviroment);
     ball.velocity = new Velocity(8, 3);
     ball.addToGame(this);
+    this.#remainingBalls.increase(1);
+  }
+
+  initializeDeathRegion(): void {
+    const margin = 20;
+    const deathRegion = new Block(
+      new Point(0, innerHeight),
+      innerWidth,
+      margin
+    );
+    deathRegion.addToGame(this);
+    deathRegion.addHitListener(this.#ballRemover);
   }
 
   addCollidable(c: ICollidable): void {
     this.#enviroment.addCollidable(c);
   }
 
+  removeCollidable(c: ICollidable): void {
+    this.#enviroment.removeCollidable(c);
+  }
+
   addSprite(s: ISprite): void {
     this.#sprites.addSprite(s);
+  }
+
+  removeSprite(c: ISprite): void {
+    this.#sprites.removeSprite(c);
   }
 }

@@ -1,5 +1,6 @@
 import { ISprite } from "../interfaces/ISprite";
 import { Gui } from "./Gui";
+import _ from "lodash";
 
 export class SpriteCollection {
   #sprites: ISprite[];
@@ -12,14 +13,20 @@ export class SpriteCollection {
     this.#sprites.push(s);
   }
 
+  removeSprite(s: ISprite) {
+    this.#sprites = this.#sprites.filter((sprite) => sprite != s);
+  }
+
   notifyAllTimePassed(): void {
-    for (const sprite of this.#sprites) {
+    const sprites = _.clone(this.#sprites);
+    for (const sprite of sprites) {
       sprite.timePassed();
     }
   }
 
   drawAllOnGui(gui: Gui): void {
-    for (const sprite of this.#sprites) {
+    const sprites = _.clone(this.#sprites);
+    for (const sprite of sprites) {
       sprite.drawOnGui(gui);
     }
   }

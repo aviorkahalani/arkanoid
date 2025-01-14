@@ -1,6 +1,7 @@
 import { ICollidable } from "../interfaces/ICollidable";
 import { ISprite } from "../interfaces/ISprite";
 import { Arkanoid } from "./Arkanoid";
+import { Ball } from "./Ball";
 import { Color } from "./Color";
 import { Gui } from "./Gui";
 import { KeyboardSensor } from "./KeyboardSensor";
@@ -30,7 +31,7 @@ export class Paddle extends Rectangle implements ISprite, ICollidable {
     return new Rectangle(this.upperLeft, this.width, this.height);
   }
 
-  hit(collisionPoint: Point, currentVelocity: Velocity): Velocity {
+  hit(_: Ball, collisionPoint: Point, currentVelocity: Velocity): Velocity {
     const collisionRectangle = this.getCollisionRectangle();
     const numOfRegions = 5;
     const regionWidth = collisionRectangle.width / numOfRegions;
@@ -54,7 +55,7 @@ export class Paddle extends Rectangle implements ISprite, ICollidable {
     }
 
     if (collisionPoint.x <= center) {
-      const dx = 0;
+      const dx = 2;
       const dy = -currentVelocity.dy;
       return new Velocity(dx, dy);
     }

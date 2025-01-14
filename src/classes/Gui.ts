@@ -77,6 +77,11 @@ export class Gui {
     this.#ctx.fillRect(x, y, width, height);
   }
 
+  drawFrame(x: number, y: number, width: number, height: number): void {
+    this.#ctx.strokeStyle = Color.BLACK.hexCode;
+    this.#ctx.strokeRect(x, y, width, height);
+  }
+
   drawCircle(x: number, y: number, radius: number) {
     this.#ctx.fillStyle = this.#color.hexCode;
     this.#ctx.strokeStyle = this.#color.hexCode;

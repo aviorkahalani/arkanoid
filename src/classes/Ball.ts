@@ -39,6 +39,10 @@ export class Ball implements ISprite {
     return new Color(this.#color.red, this.#color.green, this.#color.blue);
   }
 
+  set color(color: Color) {
+    this.#color = color;
+  }
+
   get velocity(): Velocity {
     return new Velocity(this.#velocity.dx, this.#velocity.dy);
   }
@@ -70,7 +74,7 @@ export class Ball implements ISprite {
     } else {
       const collisionPoint = collisionInfo.collisionPoint;
       const collisionObject = collisionInfo.collisionObject;
-      const v = collisionObject.hit(collisionPoint, this.#velocity);
+      const v = collisionObject.hit(this, collisionPoint, this.#velocity);
 
       this.#center = new Point(
         collisionPoint.x - this.#velocity.dx * epsilon,
@@ -83,5 +87,9 @@ export class Ball implements ISprite {
 
   addToGame(game: Arkanoid): void {
     game.addSprite(this);
+  }
+
+  removeFromGame(game: Arkanoid): void {
+    game.removeSprite(this);
   }
 }
