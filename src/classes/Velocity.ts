@@ -25,10 +25,10 @@ export class Velocity {
     this.#dy = dy;
   }
 
-  fromAngleAndSpeed(angle: number, speed: number) {
-    const radians = angle * (Math.PI / 180.0);
-    const dx = speed * Math.sin(radians);
-    const dy = -speed * Math.cos(radians);
+  static fromAngleAndSpeed(angle: number, speed: number) {
+    const angleInRadians = (angle * Math.PI) / 180;
+    const dx = speed * Math.sin(angleInRadians);
+    const dy = -speed * Math.cos(angleInRadians);
     return new Velocity(dx, dy);
   }
 

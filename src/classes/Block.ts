@@ -29,7 +29,7 @@ export class Block extends Rectangle implements ICollidable, ISprite {
   }
 
   hit(collisionPoint: Point, currentVelocity: Velocity): Velocity {
-    const epsilon = 1e-8;
+    const epsilon = 1e-6;
 
     const leftSide = this.upperLeft.x;
     const rightSide = this.upperLeft.x + this.width;

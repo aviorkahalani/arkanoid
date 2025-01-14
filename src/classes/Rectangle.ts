@@ -16,6 +16,10 @@ export class Rectangle {
     return new Point(this.#upperLeft.x, this.#upperLeft.y);
   }
 
+  set upperLeft(p: Point) {
+    this.#upperLeft = p;
+  }
+
   get width(): number {
     return this.#width;
   }

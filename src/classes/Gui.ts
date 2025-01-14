@@ -56,10 +56,7 @@ export class Gui {
   }
 
   get keyboardSensor(): KeyboardSensor {
-    return new KeyboardSensor(
-      this.#keyboardSensor.key,
-      this.#keyboardSensor.isPressed
-    );
+    return this.#keyboardSensor;
   }
 
   set color(color: Color) {

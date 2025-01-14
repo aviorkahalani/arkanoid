@@ -70,13 +70,14 @@ export class Ball implements ISprite {
     } else {
       const collisionPoint = collisionInfo.collisionPoint;
       const collisionObject = collisionInfo.collisionObject;
+      const v = collisionObject.hit(collisionPoint, this.#velocity);
 
       this.#center = new Point(
         collisionPoint.x - this.#velocity.dx * epsilon,
         collisionPoint.y - this.#velocity.dy * epsilon
       );
 
-      this.#velocity = collisionObject.hit(collisionPoint, this.#velocity);
+      this.#velocity = v;
     }
   }
 

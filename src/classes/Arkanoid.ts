@@ -5,6 +5,7 @@ import { Block } from "./Block";
 import { Color } from "./Color";
 import { GameEnvironment } from "./GameEnvironment";
 import { Gui } from "./Gui";
+import { Paddle } from "./Paddle";
 import { Point } from "./Point";
 import { SpriteCollection } from "./SpriteCollection";
 import { Velocity } from "./Velocity";
@@ -23,6 +24,7 @@ export class Arkanoid {
   main(): void {
     this.initializeWalls();
     this.initializeBlocks();
+    this.initializePaddle();
     this.initializeBall();
 
     const animate = () => {
@@ -89,6 +91,19 @@ export class Arkanoid {
         block.addToGame(this);
       }
     }
+  }
+
+  initializePaddle(): void {
+    const margin = 20;
+    const paddle = new Paddle(
+      new Point(innerWidth / 2, innerHeight - margin * 2),
+      margin * 10,
+      margin,
+      this.#gui.keyboardSensor,
+      Color.PINK
+    );
+
+    paddle.addToGame(this);
   }
 
   initializeBall(): void {
